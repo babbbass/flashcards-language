@@ -1,0 +1,144 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Theme tokens exposed to Tailwind.
+ * Every color points to a CSS variable so it can change at runtime:
+ * light/dark via `.dark`, and the per-language palette via `[data-lang]`.
+ */
+@theme inline {
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-space-grotesk);
+  --font-heading: var(--font-archivo-black);
+
+  /* Neo-brutalist hard shadows: no blur, solid ink offset */
+  --shadow-brutal-sm: 2px 2px 0 0 var(--ink);
+  --shadow-brutal: 4px 4px 0 0 var(--ink);
+  --shadow-brutal-lg: 6px 6px 0 0 var(--ink);
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Neutral base: cream paper + black ink (used before a language is chosen) */
+:root {
+  --ink: #0a0a0a;
+  --paper: #fff8e7;
+}
+
+/*
+ * Tokens derived from ink/paper. Declared on both selectors on purpose:
+ * a var() reference is resolved where it is declared, so `.dark` must
+ * re-declare them to pick up its own ink/paper values.
+ */
+:root,
+.dark {
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: #ffffff;
+  --card-foreground: var(--ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: #ffffff;
+  --secondary-foreground: var(--ink);
+  --muted: #f1ead6;
+  --muted-foreground: #5c5647;
+  --accent: #f1ead6;
+  --accent-foreground: var(--ink);
+  --destructive: #e5484d;
+  --border: var(--ink);
+  --input: var(--ink);
+  --ring: var(--ink);
+  --radius: 0.75rem;
+
+  --sidebar: var(--paper);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--ink);
+  --sidebar-ring: var(--ink);
+}
+
+/* Dark: ink and paper swap, so borders and shadows become cream on black */
+.dark {
+  --ink: #fff8e7;
+  --paper: #0f0f0f;
+
+  --card: #1a1a1a;
+  --popover: #1a1a1a;
+  --secondary: #1a1a1a;
+  --muted: #262626;
+  --muted-foreground: #b5ad98;
+  --accent: #262626;
+}
+
+/* Language palettes: flag colors drive primary (main fill) and accent */
+[data-lang="en"] {
+  --primary: #012169; /* UK navy */
+  --primary-foreground: #ffffff;
+  --accent: #c8102e; /* UK red */
+  --accent-foreground: #ffffff;
+}
+
+[data-lang="es"] {
+  --primary: #aa151b; /* Spain red */
+  --primary-foreground: #ffffff;
+  --accent: #f1bf00; /* Spain yellow */
+  --accent-foreground: #0a0a0a;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-heading tracking-tight;
+  }
+}
