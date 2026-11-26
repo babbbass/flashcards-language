@@ -30,7 +30,7 @@ export const getLanguageStats = cache(async (code: LanguageCode) => {
         userCards: { none: { userId: user.id } },
       },
     }),
-    // Due: discovered cards (both directions) whose next review date has come
+    // Due: discovered cards whose next review date has come (one review per card)
     prisma.reviewState.count({
       where: {
         due: { lte: now },
