@@ -1,7 +1,9 @@
 import { languageFromParam } from "@/lib/language-route";
 
+type Props = PageProps<"/[lang]">;
+
 /** TEMPORARY language home (step 5). The real home (hero card, streak) comes in step 6. */
-const LanguageHomePage = async ({ params }: PageProps<"/[lang]">) => {
+const LanguageHomePage = async ({ params }: Props) => {
   const language = languageFromParam((await params).lang);
 
   return (
