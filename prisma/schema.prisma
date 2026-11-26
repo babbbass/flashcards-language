@@ -1,0 +1,189 @@
+// Flashcards — data model
+//
+// Content vs. progress:
+//   Language → Deck → Card   : what there is to learn (shared catalog + private cards)
+//   User → UserCard → Review : what each user does with it (inbox choice, FSRS state, history)
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ─── Enums ─────────────────────────────────────────────────────────────────
+
+enum PartOfSpeech {
+  NOUN
+  VERB
+  ADJECTIVE
+  ADVERB
+  PHRASAL_VERB
+  EXPRESSION
+  OTHER
+}
+
+/// What the user decided in the Inbox. No UserCard row at all = still in the Inbox.
+enum UserCardStatus {
+  LEARNING
+  SKIPPED
+}
+
+/// Which side is asked. FORWARD: target word → native translation. REVERSE: the opposite.
+enum Direction {
+  FORWARD
+  REVERSE
+}
+
+/// FSRS card state (mirrors ts-fsrs State: New=0, Learning=1, Review=2, Relearning=3)
+enum FsrsState {
+  NEW
+  LEARNING
+  REVIEW
+  RELEARNING
+}
+
+/// FSRS rating (mirrors ts-fsrs Rating: Again=1, Hard=2, Good=3, Easy=4)
+enum Rating {
+  AGAIN
+  HARD
+  GOOD
+  EASY
+}
+
+// ─── Content ───────────────────────────────────────────────────────────────
+
+/// A language you can learn. Adding Spanish = one row + a CSS palette, no schema change.
+model Language {
+  code       String   @id // ISO 639-1: "en", "es"
+  name       String // "English"
+  nativeName String // "English", "Español"
+  ttsLocale  String // Web Speech voice, e.g. "en-GB", "es-ES"
+  createdAt  DateTime @default(now())
+
+  decks Deck[]
+}
+
+/// A thematic set of cards inside one language. ownerId null = shared catalog deck.
+model Deck {
+  id           String   @id @default(cuid())
+  languageCode String
+  slug         String // stable key used by the JSON importer, e.g. "restaurant"
+  name         String
+  description  String?
+  ownerId      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  language Language @relation(fields: [languageCode], references: [code])
+  owner    User?    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  cards    Card[]
+
+  @@unique([languageCode, slug])
+  @@index([ownerId])
+}
+
+/// One word or expression. ownerId null = catalog card, otherwise private to its author.
+model Card {
+  id                 String        @id @default(cuid())
+  deckId             String
+  key                String?       @unique // importer key "en/restaurant/the-bill"; null for manual cards
+  term               String // word or expression in the target language
+  translation        String // in the user's native language
+  example            String?
+  exampleTranslation String?
+  phonetic           String? // IPA, e.g. "/ðə bɪl/"
+  partOfSpeech       PartOfSpeech?
+  note               String?
+  ownerId            String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  deck      Deck       @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  owner     User?      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  userCards UserCard[]
+
+  @@index([deckId])
+  @@index([ownerId])
+}
+
+// ─── Users & progress ──────────────────────────────────────────────────────
+
+/// Mirrors the Clerk user (id = Clerk user id).
+model User {
+  id               String   @id
+  nativeLanguage   String   @default("fr")
+  timezone         String   @default("Europe/Paris") // used to compute "today" for streaks
+  lastLanguageCode String? // reopen the app on this language
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  decks     Deck[]
+  cards     Card[]
+  userCards UserCard[]
+  reviews   ReviewLog[]
+}
+
+/// A user's decision about a card, made in the Inbox.
+model UserCard {
+  id           String         @id @default(cuid())
+  userId       String
+  cardId       String
+  status       UserCardStatus
+  discoveredAt DateTime? // null while LEARNING = discovery step still to do
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card   Card          @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  states ReviewState[]
+
+  @@unique([userId, cardId])
+  @@index([userId, status])
+}
+
+/// FSRS scheduling state, one per direction (so a learned card has 2 rows).
+model ReviewState {
+  id            String    @id @default(cuid())
+  userCardId    String
+  direction     Direction
+  due           DateTime  @default(now())
+  stability     Float     @default(0)
+  difficulty    Float     @default(0)
+  scheduledDays Int       @default(0)
+  learningSteps Int       @default(0)
+  reps          Int       @default(0)
+  lapses        Int       @default(0)
+  state         FsrsState @default(NEW)
+  lastReview    DateTime?
+
+  userCard UserCard    @relation(fields: [userCardId], references: [id], onDelete: Cascade)
+  logs     ReviewLog[]
+
+  @@unique([userCardId, direction])
+  @@index([due])
+}
+
+/// One row per answer. Drives the streak and future stats / FSRS optimisation.
+/// userId and languageCode are denormalised so streak queries need no joins.
+model ReviewLog {
+  id            String    @id @default(cuid())
+  reviewStateId String
+  userId        String
+  languageCode  String
+  rating        Rating
+  state         FsrsState // state before the answer
+  due           DateTime
+  stability     Float
+  difficulty    Float
+  scheduledDays Int
+  learningSteps Int
+  reviewedAt    DateTime  @default(now())
+
+  reviewState ReviewState @relation(fields: [reviewStateId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, languageCode, reviewedAt])
+}
