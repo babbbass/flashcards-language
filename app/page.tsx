@@ -14,7 +14,7 @@ const ThemeSample = ({ code, nativeName }: Language) => (
       {nativeName}
     </span>
     <div>
-      <h2 className="text-4xl">How are you?</h2>
+      <h3 className="text-4xl">How are you?</h3>
       <p className="text-muted-foreground">Comment vas-tu ?</p>
     </div>
     <div className="flex flex-wrap gap-3">
@@ -31,7 +31,7 @@ const ThemeSample = ({ code, nativeName }: Language) => (
 
 const Preview = ({ title }: { title: string }) => (
   <div className="bg-background text-foreground flex flex-col gap-6 p-6 sm:p-10">
-    <h1 className="text-2xl">{title}</h1>
+    <h2 className="text-2xl">{title}</h2>
     <div className="grid gap-6 md:grid-cols-2">
       {LANGUAGES.map((language) => (
         <ThemeSample key={language.code} {...language} />
@@ -42,6 +42,7 @@ const Preview = ({ title }: { title: string }) => (
 
 const Home = () => (
   <main className="flex flex-1 flex-col">
+    <h1 className="sr-only">Theme preview</h1>
     <Preview title="Light" />
     <div className="dark">
       <Preview title="Dark" />
