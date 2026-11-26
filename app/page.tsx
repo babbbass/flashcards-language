@@ -10,9 +10,9 @@ function ThemeSample({ lang, label }: (typeof PALETTES)[number]) {
   return (
     <section
       data-lang={lang}
-      className="flex flex-col gap-5 rounded-xl border-3 border-ink bg-card p-6 shadow-brutal"
+      className="border-ink bg-card shadow-brutal flex flex-col gap-5 rounded-xl border-3 p-6"
     >
-      <span className="w-fit rounded-md border-2 border-ink bg-accent px-2 py-0.5 text-xs font-bold text-accent-foreground uppercase">
+      <span className="border-ink bg-accent text-accent-foreground w-fit rounded-md border-2 px-2 py-0.5 text-xs font-bold uppercase">
         {label}
       </span>
       <div>
@@ -34,7 +34,7 @@ function ThemeSample({ lang, label }: (typeof PALETTES)[number]) {
 
 function Preview({ title }: { title: string }) {
   return (
-    <div className="flex flex-col gap-6 bg-background p-6 text-foreground sm:p-10">
+    <div className="bg-background text-foreground flex flex-col gap-6 p-6 sm:p-10">
       <h1 className="text-2xl">{title}</h1>
       <div className="grid gap-6 md:grid-cols-2">
         {PALETTES.map((palette) => (
