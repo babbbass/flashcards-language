@@ -29,8 +29,8 @@ export const weekOf = (day: LocalDay): LocalDay[] => {
   return Array.from({ length: 7 }, (_, index) => addDays(monday, index));
 };
 
-/** Short weekday label: "Mon", "Tue"… */
-export const weekdayLabel = (day: LocalDay) =>
-  new Intl.DateTimeFormat("en-GB", { weekday: "short", timeZone: "UTC" }).format(
+/** Short weekday label in a locale: "Mon" (en-GB), "lun" (es-ES)… */
+export const weekdayLabel = (day: LocalDay, locale: string) =>
+  new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" }).format(
     new Date(`${day}T00:00:00Z`),
   );

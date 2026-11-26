@@ -6,7 +6,6 @@ export type TabKey = "home" | "inbox" | "review" | "decks" | "profile";
 
 type Tab = {
   key: TabKey;
-  label: string;
   icon: LucideIcon;
   /** Path inside the language, "" for the language home. */
   segment: string;
@@ -14,13 +13,16 @@ type Tab = {
   built: boolean;
 };
 
-/** Bottom tab bar on mobile, sidebar on desktop: same config, single source of truth. */
+/**
+ * Bottom tab bar on mobile, sidebar on desktop: same config, single source of truth.
+ * Labels live in the dictionaries (`nav.tabs[key]`), in the language being studied.
+ */
 export const TABS: readonly Tab[] = [
-  { key: "home", label: "Home", icon: House, segment: "", built: true },
-  { key: "inbox", label: "Inbox", icon: Inbox, segment: "inbox", built: false },
-  { key: "review", label: "Review", icon: Layers, segment: "review", built: false },
-  { key: "decks", label: "Decks", icon: LibraryBig, segment: "decks", built: false },
-  { key: "profile", label: "Profile", icon: UserRound, segment: "profile", built: false },
+  { key: "home", icon: House, segment: "", built: true },
+  { key: "inbox", icon: Inbox, segment: "inbox", built: false },
+  { key: "review", icon: Layers, segment: "review", built: false },
+  { key: "decks", icon: LibraryBig, segment: "decks", built: false },
+  { key: "profile", icon: UserRound, segment: "profile", built: false },
 ];
 
 export const tabHref = (code: LanguageCode, tab: Pick<Tab, "segment">) =>

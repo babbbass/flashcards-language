@@ -1,4 +1,5 @@
 import "server-only";
+import { connection } from "next/server";
 import { cache } from "react";
 import { requireUser } from "@/lib/auth/current-user";
 import { toLocalDay, weekOf } from "@/lib/dates";
@@ -15,6 +16,8 @@ const STREAK_LOOKBACK_DAYS = 400;
  */
 export const getLanguageStats = cache(async (code: LanguageCode) => {
   const user = await requireUser();
+  // "Now" belongs to the request, not to a prerender (Cache Components)
+  await connection();
   const now = new Date();
   const inLanguage = { deck: { languageCode: code } };
 
