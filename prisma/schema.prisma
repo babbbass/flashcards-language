@@ -31,7 +31,8 @@ enum UserCardStatus {
   SKIPPED
 }
 
-/// Which side is asked. FORWARD: target word → native translation. REVERSE: the opposite.
+/// Which side of the card is shown first in review. FORWARD: target word → native translation
+/// (e.g. English → French). REVERSE: the opposite. A user setting, not a per-card property.
 enum Direction {
   FORWARD
   REVERSE
@@ -119,12 +120,13 @@ model Card {
 
 /// Mirrors the Clerk user (id = Clerk user id).
 model User {
-  id               String   @id
-  nativeLanguage   String   @default("fr")
-  timezone         String   @default("Europe/Paris") // used to compute "today" for streaks
+  id               String    @id
+  nativeLanguage   String    @default("fr")
+  timezone         String    @default("Europe/Paris") // used to compute "today" for streaks
   lastLanguageCode String? // reopen the app on this language
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  reviewDirection  Direction @default(FORWARD) // switchable anytime; cards keep their progress
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   decks     Deck[]
   cards     Card[]
@@ -142,19 +144,19 @@ model UserCard {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 
-  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  card   Card          @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  states ReviewState[]
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card        Card         @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  reviewState ReviewState?
 
   @@unique([userId, cardId])
   @@index([userId, status])
 }
 
-/// FSRS scheduling state, one per direction (so a learned card has 2 rows).
+/// FSRS scheduling state of a learned card: ONE per card, whatever the review direction
+/// (one card = one review; switching direction keeps the schedule).
 model ReviewState {
   id            String    @id @default(cuid())
-  userCardId    String
-  direction     Direction
+  userCardId    String    @unique
   due           DateTime  @default(now())
   stability     Float     @default(0)
   difficulty    Float     @default(0)
@@ -168,7 +170,6 @@ model ReviewState {
   userCard UserCard    @relation(fields: [userCardId], references: [id], onDelete: Cascade)
   logs     ReviewLog[]
 
-  @@unique([userCardId, direction])
   @@index([due])
 }
 
@@ -180,6 +181,7 @@ model ReviewLog {
   userId        String
   languageCode  String
   rating        Rating
+  direction     Direction // side shown first for this answer (the setting at that time)
   state         FsrsState // state before the answer
   due           DateTime
   stability     Float
