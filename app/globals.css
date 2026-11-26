@@ -12,10 +12,6 @@
 @theme inline {
   --color-ink: var(--ink);
   --color-paper: var(--paper);
-  --color-flag-uk-blue: var(--flag-uk-blue);
-  --color-flag-uk-red: var(--flag-uk-red);
-  --color-flag-es-red: var(--flag-es-red);
-  --color-flag-es-yellow: var(--flag-es-yellow);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-space-grotesk);
@@ -115,7 +111,8 @@
   --accent: #262626;
 }
 
-/* Official flag colors: used by the flag icons and by the language palettes below */
+/* Official flag colors, used by the language palettes below.
+   Keep in sync with the flag icons in assets/svg/flags/ (static files cannot read CSS variables). */
 :root {
   --flag-uk-blue: #012169;
   --flag-uk-red: #c8102e;
