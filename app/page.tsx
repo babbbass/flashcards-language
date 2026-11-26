@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { CurrentUserStatus } from "@/components/current-user-status";
 import { LanguageFlag } from "@/components/language-flag";
 import { Button } from "@/components/ui/button";
 import { LANGUAGES, type Language } from "@/lib/languages";
@@ -47,6 +49,11 @@ const Preview = ({ title }: Props) => (
 const Home = () => (
   <main className="flex flex-1 flex-col">
     <h1 className="sr-only">Theme preview</h1>
+    <header className="flex justify-end p-6 pb-0 sm:px-10">
+      <Suspense fallback={<div className="h-12" />}>
+        <CurrentUserStatus />
+      </Suspense>
+    </header>
     <Preview title="Light" />
     <div className="dark">
       <Preview title="Dark" />
