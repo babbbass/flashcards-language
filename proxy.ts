@@ -1,4 +1,5 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
+import { SIGN_IN_URL, SIGN_UP_URL } from "@/lib/auth/routes";
 
 /**
  * Next.js 16 Proxy (formerly Middleware): only attaches the Clerk session to requests.
@@ -7,8 +8,10 @@ import { clerkMiddleware } from "@clerk/nextjs/server";
  * server code path that reads user data calls `requireUser()` (lib/auth/current-user.ts),
  * which redirects to sign-in when there is no session. This is what both Clerk Core 3
  * and the Next.js 16 docs recommend.
+ *
+ * The sign-in/up URLs set here are the ones server-side `auth.protect()` redirects to.
  */
-export default clerkMiddleware();
+export default clerkMiddleware({ signInUrl: SIGN_IN_URL, signUpUrl: SIGN_UP_URL });
 
 export const config = {
   matcher: [
