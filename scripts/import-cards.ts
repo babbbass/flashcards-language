@@ -11,7 +11,13 @@
 import "dotenv/config";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import { type CardFile, cardKey, type DeckFile, deckFileSchema } from "@/lib/content/deck-schema";
+import {
+  type CardFile,
+  cardKey,
+  type DeckFile,
+  deckFileSchema,
+  KEBAB_CASE,
+} from "@/lib/content/deck-schema";
 import { isLanguageCode, LANGUAGES, type LanguageCode } from "@/lib/languages";
 import { prisma } from "@/lib/prisma";
 
@@ -33,8 +39,20 @@ type DeckReport = {
 
 // ─── Read & validate ─────────────────────────────────────────────────────────
 
+const isMissingFileError = (error: unknown) =>
+  error instanceof Error && "code" in error && error.code === "ENOENT";
+
 const listDeckFiles = async () => {
-  const languageDirs = await readdir(CONTENT_DIR, { withFileTypes: true });
+  const languageDirs = await readdir(CONTENT_DIR, { withFileTypes: true }).catch(
+    (error: unknown) => {
+      if (isMissingFileError(error)) {
+        throw new Error(`${CONTENT_DIR} not found: run the script from the project root`, {
+          cause: error,
+        });
+      }
+      throw error;
+    },
+  );
   const files = await Promise.all(
     languageDirs
       .filter((entry) => entry.isDirectory())
@@ -55,6 +73,13 @@ const parseDeckFile = async (languageDir: string, fileName: string): Promise<Par
     throw new Error(`${file}: unknown language "${languageDir}" (add it to lib/languages.ts)`);
   }
 
+  const slug = path.basename(fileName, ".json");
+  if (!KEBAB_CASE.test(slug)) {
+    throw new Error(
+      `${file}: file name must be kebab-case (it becomes the deck slug, e.g. small-talk.json)`,
+    );
+  }
+
   const raw = await readFile(path.join(CONTENT_DIR, languageDir, fileName), "utf8");
   let json: unknown;
   try {
@@ -71,7 +96,6 @@ const parseDeckFile = async (languageDir: string, fileName: string): Promise<Par
     throw new Error(`${file}: invalid deck\n${issues}`);
   }
 
-  const slug = path.basename(fileName, ".json");
   const keys = result.data.cards.map((card) => cardKey(languageDir, slug, card));
   const duplicates = keys.filter((key, index) => keys.indexOf(key) !== index);
   if (duplicates.length > 0) {
@@ -127,38 +151,42 @@ const cardData = (card: CardFile) => ({
 });
 
 const importDeck = ({ file, languageCode, slug, deck }: ParsedDeck) =>
-  prisma.$transaction(async (tx) => {
-    const { id: deckId } = await tx.deck.upsert({
-      where: { languageCode_slug: { languageCode, slug } },
-      create: { languageCode, slug, name: deck.name, description: deck.description ?? null },
-      update: { name: deck.name, description: deck.description ?? null },
-    });
-
-    const existingKeys = new Set(
-      (await tx.card.findMany({ where: { deckId, key: { not: null } }, select: { key: true } }))
-        .map((card) => card.key)
-        .filter((key) => key !== null),
-    );
-
-    const fileKeys = new Set<string>();
-    for (const card of deck.cards) {
-      const key = cardKey(languageCode, slug, card);
-      fileKeys.add(key);
-      await tx.card.upsert({
-        where: { key },
-        create: { key, deckId, ...cardData(card) },
-        update: cardData(card),
+  prisma.$transaction(
+    async (tx) => {
+      const { id: deckId } = await tx.deck.upsert({
+        where: { languageCode_slug: { languageCode, slug } },
+        create: { languageCode, slug, name: deck.name, description: deck.description ?? null },
+        update: { name: deck.name, description: deck.description ?? null },
       });
-    }
 
-    const report: DeckReport = {
-      file,
-      created: [...fileKeys].filter((key) => !existingKeys.has(key)).length,
-      refreshed: [...fileKeys].filter((key) => existingKeys.has(key)).length,
-      stale: [...existingKeys].filter((key) => !fileKeys.has(key)),
-    };
-    return report;
-  });
+      const existingKeys = new Set(
+        (await tx.card.findMany({ where: { deckId, key: { not: null } }, select: { key: true } }))
+          .map((card) => card.key)
+          .filter((key) => key !== null),
+      );
+
+      const fileKeys = new Set<string>();
+      for (const card of deck.cards) {
+        const key = cardKey(languageCode, slug, card);
+        fileKeys.add(key);
+        await tx.card.upsert({
+          where: { key },
+          create: { key, deckId, ...cardData(card) },
+          update: cardData(card),
+        });
+      }
+
+      const report: DeckReport = {
+        file,
+        created: [...fileKeys].filter((key) => !existingKeys.has(key)).length,
+        refreshed: [...fileKeys].filter((key) => existingKeys.has(key)).length,
+        stale: [...existingKeys].filter((key) => !fileKeys.has(key)),
+      };
+      return report;
+    },
+    // Default is 5 s; on Turso every upsert is a network round trip, so a large deck needs more.
+    { maxWait: 10_000, timeout: 60_000 },
+  );
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 
