@@ -1,6 +1,9 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Archivo_Black, Space_Grotesk } from "next/font/google";
 import "@/app/globals.css";
+import { clerkAppearance } from "@/lib/auth/appearance";
+import { SIGN_IN_URL, SIGN_UP_URL } from "@/lib/auth/routes";
 
 // Body & UI text
 const spaceGrotesk = Space_Grotesk({
@@ -26,7 +29,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${spaceGrotesk.variable} ${archivoBlack.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <ClerkProvider appearance={clerkAppearance} signInUrl={SIGN_IN_URL} signUpUrl={SIGN_UP_URL}>
+          {children}
+        </ClerkProvider>
+      </body>
     </html>
   );
 }

@@ -8,7 +8,7 @@
  * twice changes nothing. Cards removed from a file are NOT deleted (users may have
  * progress on them); they are only reported.
  */
-import "dotenv/config";
+import "@/lib/load-env";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import {
