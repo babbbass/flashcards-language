@@ -1,5 +1,6 @@
 import { UserButton } from "@clerk/nextjs";
 import { LanguageSwitchLink } from "@/components/language-switch-link";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 import type { Language } from "@/lib/languages";
 
 type Props = {
@@ -13,7 +14,11 @@ type Props = {
  */
 export const LanguageHeader = ({ language }: Props) => (
   <header className="flex items-center justify-between p-4 sm:px-6 md:absolute md:top-6 md:right-6 md:p-0">
-    <LanguageSwitchLink language={language} className="md:hidden" />
+    <LanguageSwitchLink
+      language={language}
+      label={getDictionary(language.code).language.change(language.nativeName)}
+      className="md:hidden"
+    />
     <div className="ml-auto">
       <UserButton />
     </div>
