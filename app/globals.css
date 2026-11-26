@@ -111,18 +111,27 @@
   --accent: #262626;
 }
 
+/* Official flag colors, used by the language palettes below.
+   Keep in sync with the flag icons in assets/svg/flags/ (static files cannot read CSS variables). */
+:root {
+  --flag-uk-blue: #012169;
+  --flag-uk-red: #c8102e;
+  --flag-es-red: #aa151b;
+  --flag-es-yellow: #f1bf00;
+}
+
 /* Language palettes: flag colors drive primary (main fill) and accent */
 [data-lang="en"] {
-  --primary: #012169; /* UK navy */
+  --primary: var(--flag-uk-blue);
   --primary-foreground: #ffffff;
-  --accent: #c8102e; /* UK red */
+  --accent: var(--flag-uk-red);
   --accent-foreground: #ffffff;
 }
 
 [data-lang="es"] {
-  --primary: #aa151b; /* Spain red */
+  --primary: var(--flag-es-red);
   --primary-foreground: #ffffff;
-  --accent: #f1bf00; /* Spain yellow */
+  --accent: var(--flag-es-yellow);
   --accent-foreground: #0a0a0a;
 }
 
@@ -135,6 +144,12 @@
   }
   html {
     @apply font-sans;
+  }
+  /* Tailwind v4 resets buttons to the default cursor: restore the pointer on every clickable button */
+  /* Base UI can disable a button with aria-disabled / data-disabled only (focusableWhenDisabled) */
+  button:not(:disabled, [aria-disabled="true"], [data-disabled]),
+  [role="button"]:not([aria-disabled="true"], [data-disabled]) {
+    @apply cursor-pointer;
   }
   h1,
   h2,

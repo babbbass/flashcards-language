@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30" height="30">
+  <title>Flag of Spain</title>
+  <!-- Spain: red / yellow (double height) / red. Coat of arms omitted at icon size. -->
+  <rect width="30" height="30" fill="#aa151b"/>
+  <rect y="7.5" width="30" height="15" fill="#f1bf00"/>
+</svg>
