@@ -1,15 +1,22 @@
+import { DeckList } from "@/components/home/deck-list";
+import { HeroCard } from "@/components/home/hero-card";
+import { StreakWeek } from "@/components/home/streak-week";
 import { languageFromParam } from "@/lib/language-route";
+import { getLanguageStats } from "@/lib/stats/language-stats";
 
 type Props = PageProps<"/[lang]">;
 
-/** TEMPORARY language home (step 5). The real home (hero card, streak) comes in step 6. */
+/** Language home: streak of the week, the next thing to do, and the decks. */
 const LanguageHomePage = async ({ params }: Props) => {
   const language = languageFromParam((await params).lang);
+  const stats = await getLanguageStats(language.code);
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
-      <h1 className="text-primary text-5xl">{language.name}</h1>
-      <p className="text-muted-foreground">Your {language.name} home is coming in the next step.</p>
+    <main className="mx-auto flex w-full max-w-2xl flex-col gap-8 p-4 sm:p-6">
+      <h1 className="sr-only">{language.name} home</h1>
+      <StreakWeek streak={stats.streak} week={stats.week} />
+      <HeroCard code={language.code} inbox={stats.inbox} due={stats.due} />
+      <DeckList code={language.code} />
     </main>
   );
 };

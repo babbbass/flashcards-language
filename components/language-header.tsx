@@ -1,23 +1,21 @@
 import { UserButton } from "@clerk/nextjs";
-import Link from "next/link";
-import { LanguageFlag } from "@/components/language-flag";
-import { LANGUAGE_PICKER_HREF } from "@/lib/language-route";
+import { LanguageSwitchLink } from "@/components/language-switch-link";
 import type { Language } from "@/lib/languages";
 
 type Props = {
   language: Language;
 };
 
-/** Top bar inside a language: the flag goes back to the picker, the avatar opens the account menu. */
+/**
+ * Top bar inside a language. Mobile: the flag (back to the picker) + the account menu.
+ * Desktop: the flag lives in the sidebar, only the account menu stays, floating top-right so
+ * the page content starts at the very top, level with the sidebar.
+ */
 export const LanguageHeader = ({ language }: Props) => (
-  <header className="flex items-center justify-between p-4 sm:px-6">
-    <Link
-      href={LANGUAGE_PICKER_HREF}
-      aria-label={`${language.name}: change language`}
-      className="focus-visible:ring-ring/50 rounded-full transition-transform outline-none hover:scale-105 focus-visible:ring-4 motion-reduce:transition-none"
-    >
-      <LanguageFlag code={language.code} className="size-10" />
-    </Link>
-    <UserButton />
+  <header className="flex items-center justify-between p-4 sm:px-6 md:absolute md:top-6 md:right-6 md:p-0">
+    <LanguageSwitchLink language={language} className="md:hidden" />
+    <div className="ml-auto">
+      <UserButton />
+    </div>
   </header>
 );
