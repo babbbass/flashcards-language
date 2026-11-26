@@ -11,6 +11,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Project rules
 
 - Imports: always absolute with the `@/` alias (maps to the project root, e.g. `@/components/ui/button`, `@/lib/utils`). Never relative.
-- Package manager: pnpm. TypeScript 6.0 (pinned `~6.0`: typescript-eslint does not support TS 7 yet).
+- Package manager: pnpm. TypeScript 7 (native compiler).
+- Lint & format: Biome (`biome.json`), no ESLint/Prettier. `pnpm lint` checks, `pnpm format` writes fixes (format, Tailwind class order, import order), `pnpm typecheck` runs tsc. Markdown is not formatted.
 - Database: Prisma 7 + SQLite through the libSQL adapter (`@/lib/prisma`). Generated client in `generated/prisma` (git-ignored, rebuilt on `postinstall`). Env vars: `DATABASE_URL`, `DATABASE_AUTH_TOKEN` (Turso only).
 - Theme: neo-brutalist. Colors come from CSS variables in `app/globals.css`; the per-language palette is set with `data-lang="en|es"`, dark mode with the `.dark` class. Use `border-ink`, `shadow-brutal*`, `font-heading` instead of hard-coded values.
