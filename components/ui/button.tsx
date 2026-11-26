@@ -1,22 +1,24 @@
-import { Button as ButtonPrimitive } from "@base-ui/react/button"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
+import { Button as ButtonPrimitive } from "@base-ui/react/button";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-bold whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-bold whitespace-nowrap transition-all outline-none select-none focus-visible:ring-3 disabled:pointer-events-none disabled:opacity-50 aria-invalid:ring-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        default: "border-2 border-ink shadow-brutal-sm active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-primary text-primary-foreground hover:bg-primary/90",
-        accent: "border-2 border-ink shadow-brutal-sm active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-accent text-accent-foreground hover:bg-accent/90",
+        default:
+          "border-ink shadow-brutal-sm bg-primary text-primary-foreground hover:bg-primary/90 border-2 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none",
+        accent:
+          "border-ink shadow-brutal-sm bg-accent text-accent-foreground hover:bg-accent/90 border-2 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none",
         outline:
-          "border-2 border-ink shadow-brutal-sm active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-card text-foreground hover:bg-muted aria-expanded:bg-muted",
+          "border-ink shadow-brutal-sm bg-card text-foreground hover:bg-muted aria-expanded:bg-muted border-2 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
+          "bg-secondary text-secondary-foreground aria-expanded:bg-secondary aria-expanded:text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)]",
         ghost:
           "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
         destructive:
-          "border-2 border-ink shadow-brutal-sm active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20",
+          "border-ink shadow-brutal-sm bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 border-2 text-white active:translate-x-0.5 active:translate-y-0.5 active:shadow-none",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
@@ -37,8 +39,8 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
-)
+  },
+);
 
 function Button({
   className,
@@ -52,7 +54,7 @@ function Button({
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
-  )
+  );
 }
 
-export { Button, buttonVariants }
+export { Button, buttonVariants };
