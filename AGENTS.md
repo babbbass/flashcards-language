@@ -10,6 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Project rules
 
+- Component props: a component's own props type is named `Props` (`type Props = { … }`, then `({ … }: Props)`), never `<Component>Props` or an inline object type. One component with its own props per file; framework/library types (`LayoutProps<"/">`, shadcn primitives) stay as they are.
 - Imports: always absolute with the `@/` alias (maps to the project root, e.g. `@/components/ui/button`, `@/lib/utils`). Never relative.
 - Package manager: pnpm. TypeScript 7 (native compiler).
 - Lint & format: Biome (`biome.json`), no ESLint/Prettier. `pnpm lint` checks, `pnpm format` writes fixes (format, Tailwind class order, import order), `pnpm typecheck` runs tsc. Markdown is not formatted.

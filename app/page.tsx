@@ -29,7 +29,11 @@ const ThemeSample = ({ code, nativeName }: Language) => (
   </section>
 );
 
-const Preview = ({ title }: { title: string }) => (
+type Props = {
+  title: string;
+};
+
+const Preview = ({ title }: Props) => (
   <div className="bg-background text-foreground flex flex-col gap-6 p-6 sm:p-10">
     <h2 className="text-2xl">{title}</h2>
     <div className="grid gap-6 md:grid-cols-2">

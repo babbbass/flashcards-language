@@ -14,13 +14,13 @@ const FLAGS: Record<LanguageCode, StaticImageData> = {
   es: esFlag,
 };
 
-type LanguageFlagProps = {
+type Props = {
   code: LanguageCode;
   className?: string;
 };
 
 /** Circular flag icon. Decorative (empty alt): always pair it with the language name. */
-export const LanguageFlag = ({ code, className }: LanguageFlagProps) => (
+export const LanguageFlag = ({ code, className }: Props) => (
   <span
     className={cn(
       "border-ink inline-flex size-5 shrink-0 overflow-hidden rounded-full border-2",
