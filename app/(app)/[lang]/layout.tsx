@@ -11,6 +11,7 @@ type Props = LayoutProps<"/[lang]">;
 /**
  * Everything under `/en`, `/es`… : `data-lang` switches the whole subtree to the
  * language's flag palette (app/globals.css), so once inside a language you stay in its theme.
+ * `lang` tells screen readers and spell-checkers the interface is in that language (WCAG 3.1.2).
  * Tab bar at the bottom on mobile, sidebar on desktop.
  */
 const LanguageLayout = async ({ children, params }: Props) => {
@@ -18,7 +19,11 @@ const LanguageLayout = async ({ children, params }: Props) => {
   const { inbox, due } = await getLanguageStats(language.code);
 
   return (
-    <div data-lang={language.code} className="flex flex-1 flex-col md:flex-row">
+    <div
+      data-lang={language.code}
+      lang={language.code}
+      className="flex flex-1 flex-col md:flex-row"
+    >
       <RememberLanguage code={language.code} />
       <TabBar language={language} badges={{ inbox, review: due }} />
       {/*

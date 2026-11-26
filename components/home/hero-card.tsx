@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { type Dictionary, getDictionary } from "@/lib/i18n/get-dictionary";
 import type { LanguageCode } from "@/lib/languages";
 import { TABS, type TabKey, tabHref } from "@/lib/navigation/tabs";
 import type { LanguageStats } from "@/lib/stats/language-stats";
@@ -18,35 +19,29 @@ type NextAction = {
 } | null;
 
 /** The single most useful thing to do now: review first, then learn new cards. */
-const nextAction = ({ inbox, due }: Pick<Props, "inbox" | "due">): NextAction => {
+const nextAction = (
+  t: Dictionary["home"]["hero"],
+  { inbox, due }: Pick<Props, "inbox" | "due">,
+): NextAction => {
   if (due > 0) {
-    return {
-      eyebrow: "Review",
-      title: `${due} ${due === 1 ? "card" : "cards"} to review today`,
-      cta: "Start reviewing",
-      tab: "review",
-    };
+    return { ...t.review, title: t.review.title(due), tab: "review" };
   }
   if (inbox > 0) {
-    return {
-      eyebrow: "Inbox",
-      title: `${inbox} new ${inbox === 1 ? "card" : "cards"} waiting`,
-      cta: "Pick cards to learn",
-      tab: "inbox",
-    };
+    return { ...t.inbox, title: t.inbox.title(inbox), tab: "inbox" };
   }
   return null;
 };
 
 /** Big call-to-action card at the top of the language home. */
 export const HeroCard = ({ code, inbox, due }: Props) => {
-  const action = nextAction({ inbox, due });
+  const t = getDictionary(code).home.hero;
+  const action = nextAction(t, { inbox, due });
 
   if (!action) {
     return (
       <section className="border-ink bg-card shadow-brutal flex flex-col gap-2 rounded-2xl border-3 p-6">
-        <h2 className="text-2xl">All caught up</h2>
-        <p className="text-muted-foreground">No review due and no new card. Come back tomorrow!</p>
+        <h2 className="text-2xl">{t.caughtUp.title}</h2>
+        <p className="text-muted-foreground">{t.caughtUp.text}</p>
       </section>
     );
   }
@@ -70,7 +65,7 @@ export const HeroCard = ({ code, inbox, due }: Props) => {
         </Button>
       ) : (
         <Button size="lg" variant="accent" disabled>
-          {action.cta} · soon
+          {action.cta} · {t.soon}
         </Button>
       )}
     </section>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LanguageSwitchLink } from "@/components/language-switch-link";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 import type { Language } from "@/lib/languages";
 import { TABS, type TabKey, tabHref } from "@/lib/navigation/tabs";
 import { cn } from "@/lib/utils";
@@ -23,10 +24,11 @@ const itemClass =
 export const TabBar = ({ language, badges }: Props) => {
   const pathname = usePathname();
   const { code } = language;
+  const t = getDictionary(code).nav;
 
   return (
     <nav
-      aria-label="Main"
+      aria-label={t.label}
       className="border-ink bg-card fixed inset-x-0 bottom-0 z-10 border-t-3 pb-[env(safe-area-inset-bottom)] md:sticky md:top-0 md:h-dvh md:w-56 md:shrink-0 md:border-t-0 md:border-r-3 md:pb-0"
     >
       <LanguageSwitchLink language={language} withName className="hidden md:mx-4 md:mt-6 md:flex" />
@@ -38,11 +40,11 @@ export const TabBar = ({ language, badges }: Props) => {
           const content = (
             <>
               <Icon aria-hidden="true" className="size-5 shrink-0" />
-              <span>{tab.label}</span>
+              <span>{t.tabs[tab.key]}</span>
               {count > 0 && (
                 <span className="border-ink bg-accent text-accent-foreground absolute top-0.5 right-1 min-w-5 rounded-full border-2 px-1 text-center text-xs leading-4 md:static md:ml-auto">
                   {count}
-                  <span className="sr-only"> {count === 1 ? "item" : "items"}</span>
+                  <span className="sr-only"> {t.items(count)}</span>
                 </span>
               )}
             </>
@@ -53,7 +55,7 @@ export const TabBar = ({ language, badges }: Props) => {
               <li key={tab.key}>
                 <span aria-disabled="true" className={cn(itemClass, "text-muted-foreground")}>
                   {content}
-                  <span className="sr-only"> (coming soon)</span>
+                  <span className="sr-only"> ({t.comingSoon})</span>
                 </span>
               </li>
             );

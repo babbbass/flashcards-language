@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LanguageFlag } from "@/components/language-flag";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { LANGUAGE_PICKER_HREF } from "@/lib/language-route";
 import type { Language } from "@/lib/languages";
 import { cn } from "@/lib/utils";
@@ -11,11 +12,11 @@ type Props = {
   className?: string;
 };
 
-/** The current language's flag: goes back to the language picker. */
+/** The current language's flag (and native name): goes back to the language picker. */
 export const LanguageSwitchLink = ({ language, withName = false, className }: Props) => (
   <Link
     href={LANGUAGE_PICKER_HREF}
-    aria-label={`${language.name}: change language`}
+    aria-label={getDictionary(language.code).language.change(language.nativeName)}
     className={cn(
       "focus-visible:ring-ring/50 group flex w-fit items-center gap-3 rounded-full outline-none focus-visible:ring-4",
       className,
@@ -25,6 +26,6 @@ export const LanguageSwitchLink = ({ language, withName = false, className }: Pr
       code={language.code}
       className="size-10 transition-transform group-hover:scale-105 motion-reduce:transition-none"
     />
-    {withName && <span className="font-heading text-lg">{language.name}</span>}
+    {withName && <span className="font-heading text-lg">{language.nativeName}</span>}
   </Link>
 );

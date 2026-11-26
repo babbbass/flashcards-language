@@ -6,6 +6,7 @@
  * one entry here + its palette in `app/globals.css` (`[data-lang="xx"]`).
  */
 export const LANGUAGES = [
+  // ttsLocale: BCP 47 locale, used for the text-to-speech voice and for Intl formatting (weekdays…)
   { code: "en", name: "English", nativeName: "English", ttsLocale: "en-GB" },
   { code: "es", name: "Spanish", nativeName: "Español", ttsLocale: "es-ES" },
 ] as const satisfies readonly {
