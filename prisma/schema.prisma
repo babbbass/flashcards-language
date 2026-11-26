@@ -66,11 +66,15 @@ model Language {
   decks Deck[]
 }
 
-/// A thematic set of cards inside one language. ownerId null = shared catalog deck.
+/// A set of cards inside one language. Two kinds:
+/// - catalog deck (ownerId null): thematic, imported from JSON, slug = "restaurant"
+/// - personal deck (ownerId set): the user's single "My cards" deck for that language,
+///   created on first manual card, slug = "my-cards-<userId>" so it never collides
+///   with a catalog slug or another user's deck.
 model Deck {
   id           String   @id @default(cuid())
   languageCode String
-  slug         String // stable key used by the JSON importer, e.g. "restaurant"
+  slug         String // unique per language (see above)
   name         String
   description  String?
   ownerId      String?
@@ -82,7 +86,9 @@ model Deck {
   cards    Card[]
 
   @@unique([languageCode, slug])
-  @@index([ownerId])
+  // At most one personal deck per user and language. SQLite treats NULLs as distinct,
+  // so catalog decks (ownerId null) are not affected by this constraint.
+  @@unique([ownerId, languageCode])
 }
 
 /// One word or expression. ownerId null = catalog card, otherwise private to its author.
