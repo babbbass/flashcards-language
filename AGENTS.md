@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Project rules
 
-- Component props: a component's own props type is named `Props` (`type Props = { … }`, then `({ … }: Props)`), never `<Component>Props` or an inline object type. One component with its own props per file; framework/library types (`LayoutProps<"/">`, shadcn primitives) stay as they are.
+- Component props: a component's own props type is named `Props` (`type Props = { … }`, then `({ … }: Props)`), never `<Component>Props` or an inline type annotation. This includes Next's generated types: `type Props = LayoutProps<"/[lang]">;` / `type Props = PageProps<"/[lang]">;`, then `({ … }: Props)`. One component with its own props per file. Only vendored shadcn primitives (`components/ui`) keep their upstream typing.
 - Imports: always absolute with the `@/` alias (maps to the project root, e.g. `@/components/ui/button`, `@/lib/utils`). Never relative.
 - Package manager: pnpm. TypeScript 7 (native compiler).
 - Lint & format: Biome (`biome.json`), no ESLint/Prettier. `pnpm lint` checks, `pnpm format` writes fixes (format, Tailwind class order, import order), `pnpm typecheck` runs tsc. Markdown is not formatted.
@@ -22,3 +22,6 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Env files: secrets in `.env.local` (git-ignored). Next.js loads it natively; Node scripts and the Prisma CLI load `.env.local` then `.env` via `@/lib/load-env` / `prisma.config.ts`. Import `@/lib/load-env` FIRST in scripts (ESM imports run before the module body).
 - Testing auth: the Claude desktop in-app browser drops Clerk's `__client_uat` cookie, which makes the page reload in a loop after sign-in. Test signed-in flows in a regular browser.
 - App pages live in the `(app)` route group: its layout wraps them in `<UserGate>` (`@/components/auth/user-gate`, inside `<Suspense>`), so nothing renders before `requireUser()` passes. Auth URLs come from `@/lib/auth/routes` (used by both `proxy.ts` and `<ClerkProvider>`).
+- Routes: `/` reopens `User.lastLanguageCode` or redirects to `/languages` (picker). `/[lang]` (`en`, `es`, prerendered via `generateStaticParams`) validates the segment with `languageFromParam` (404 otherwise), sets `data-lang` on its subtree (flag palette) and records the last language. URL helpers live in `@/lib/language-route`.
+- Never set `prefetch={true}` on links to `/[lang]`: its layout records the last language during render (`RememberLanguage`), so a full prefetch would save languages the user never opened.
+- Language of parts (WCAG 3.1.2): the document is `lang="en"`; any text in the target language (card terms, examples) must carry `lang={language.code}`.

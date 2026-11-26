@@ -23,17 +23,19 @@ export const metadata: Metadata = {
   description: "Learn languages with spaced-repetition flashcards",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
-  return (
-    <html
-      lang="en"
-      className={`${spaceGrotesk.variable} ${archivoBlack.variable} h-full antialiased`}
-    >
-      <body className="flex min-h-full flex-col">
-        <ClerkProvider appearance={clerkAppearance} signInUrl={SIGN_IN_URL} signUpUrl={SIGN_UP_URL}>
-          {children}
-        </ClerkProvider>
-      </body>
-    </html>
-  );
-}
+type Props = LayoutProps<"/">;
+
+const RootLayout = ({ children }: Props) => (
+  <html
+    lang="en"
+    className={`${spaceGrotesk.variable} ${archivoBlack.variable} h-full antialiased`}
+  >
+    <body className="flex min-h-full flex-col">
+      <ClerkProvider appearance={clerkAppearance} signInUrl={SIGN_IN_URL} signUpUrl={SIGN_UP_URL}>
+        {children}
+      </ClerkProvider>
+    </body>
+  </html>
+);
+
+export default RootLayout;
