@@ -48,7 +48,7 @@
           "options": {
             "patterns": [
               {
-                "group": ["./*", "../*"],
+                "group": ["./**", "../**"],
                 "message": "Use an absolute import with the @/ alias instead of a relative path."
               }
             ]
