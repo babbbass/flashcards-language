@@ -1,0 +1,88 @@
+{
+  "name": "Greetings",
+  "description": "Say hello, introduce yourself and take leave politely.",
+  "cards": [
+    {
+      "term": "How are you?",
+      "translation": "Comment vas-tu ? / Comment allez-vous ?",
+      "example": "Hi Sarah, how are you today?",
+      "exampleTranslation": "Salut Sarah, comment vas-tu aujourd'hui ?",
+      "phonetic": "/haʊ ɑː juː/",
+      "partOfSpeech": "EXPRESSION"
+    },
+    {
+      "term": "Very well, thank you",
+      "translation": "Très bien, merci",
+      "example": "Very well, thank you. And you?",
+      "exampleTranslation": "Très bien, merci. Et toi ?",
+      "phonetic": "/ˈveri wel ˈθæŋk juː/",
+      "partOfSpeech": "EXPRESSION"
+    },
+    {
+      "term": "Nice to meet you",
+      "translation": "Enchanté(e)",
+      "example": "I'm Tom. Nice to meet you!",
+      "exampleTranslation": "Je suis Tom. Enchanté !",
+      "phonetic": "/naɪs tə miːt juː/",
+      "partOfSpeech": "EXPRESSION"
+    },
+    {
+      "term": "What's up?",
+      "translation": "Quoi de neuf ?",
+      "example": "Hey Jake, what's up?",
+      "exampleTranslation": "Salut Jake, quoi de neuf ?",
+      "phonetic": "/wɒts ʌp/",
+      "partOfSpeech": "EXPRESSION",
+      "note": "Informal. A common answer is \"Not much\"."
+    },
+    {
+      "term": "Long time no see",
+      "translation": "Ça fait longtemps !",
+      "example": "Emma! Long time no see, how have you been?",
+      "exampleTranslation": "Emma ! Ça fait longtemps, comment vas-tu ?",
+      "phonetic": "/lɒŋ taɪm nəʊ siː/",
+      "partOfSpeech": "EXPRESSION",
+      "note": "Informal."
+    },
+    {
+      "term": "Excuse me",
+      "translation": "Excusez-moi, pardon",
+      "example": "Excuse me, is this seat taken?",
+      "exampleTranslation": "Excusez-moi, cette place est prise ?",
+      "phonetic": "/ɪkˈskjuːz miː/",
+      "partOfSpeech": "EXPRESSION"
+    },
+    {
+      "term": "to introduce",
+      "translation": "présenter (quelqu'un)",
+      "example": "Let me introduce my colleague, Anna.",
+      "exampleTranslation": "Laissez-moi vous présenter ma collègue, Anna.",
+      "phonetic": "/ˌɪntrəˈdjuːs/",
+      "partOfSpeech": "VERB"
+    },
+    {
+      "term": "to catch up",
+      "translation": "prendre des nouvelles, rattraper le temps perdu",
+      "example": "Let's grab a coffee and catch up.",
+      "exampleTranslation": "Prenons un café pour se donner des nouvelles.",
+      "phonetic": "/kætʃ ʌp/",
+      "partOfSpeech": "PHRASAL_VERB"
+    },
+    {
+      "term": "See you later",
+      "translation": "À plus tard",
+      "example": "I have to go. See you later!",
+      "exampleTranslation": "Je dois y aller. À plus tard !",
+      "phonetic": "/siː juː ˈleɪtə/",
+      "partOfSpeech": "EXPRESSION"
+    },
+    {
+      "term": "Take care",
+      "translation": "Prends soin de toi",
+      "example": "Bye, Mum. Take care!",
+      "exampleTranslation": "Au revoir, maman. Prends soin de toi !",
+      "phonetic": "/teɪk keə/",
+      "partOfSpeech": "EXPRESSION"
+    }
+  ]
+}
