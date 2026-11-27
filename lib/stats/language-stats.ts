@@ -2,6 +2,7 @@ import "server-only";
 import { connection } from "next/server";
 import { cache } from "react";
 import { requireUser } from "@/lib/auth/current-user";
+import { inboxCards } from "@/lib/cards/visibility";
 import { toLocalDay, weekOf } from "@/lib/dates";
 import type { LanguageCode } from "@/lib/languages";
 import { prisma } from "@/lib/prisma";
@@ -23,13 +24,7 @@ export const getLanguageStats = cache(async (code: LanguageCode) => {
 
   const [inbox, due, reviews] = await Promise.all([
     // Inbox: cards visible to the user (catalog or their own) they have not decided on yet
-    prisma.card.count({
-      where: {
-        ...inLanguage,
-        OR: [{ ownerId: null }, { ownerId: user.id }],
-        userCards: { none: { userId: user.id } },
-      },
-    }),
+    prisma.card.count({ where: inboxCards(user.id, code) }),
     // Due: discovered cards whose next review date has come (one review per card)
     prisma.reviewState.count({
       where: {

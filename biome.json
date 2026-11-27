@@ -35,6 +35,12 @@
     },
     "rules": {
       "preset": "recommended",
+      "a11y": {
+        "noLabelWithoutControl": {
+          "level": "error",
+          "options": { "inputComponents": ["Checkbox", "SelectionCheckbox"] }
+        }
+      },
       "complexity": {
         "useArrowFunction": "error"
       },

@@ -19,7 +19,7 @@ type Tab = {
  */
 export const TABS: readonly Tab[] = [
   { key: "home", icon: House, segment: "", built: true },
-  { key: "inbox", icon: Inbox, segment: "inbox", built: false },
+  { key: "inbox", icon: Inbox, segment: "inbox", built: true },
   { key: "review", icon: Layers, segment: "review", built: false },
   { key: "decks", icon: LibraryBig, segment: "decks", built: false },
   { key: "profile", icon: UserRound, segment: "profile", built: false },
