@@ -57,6 +57,53 @@ export const en = {
       cards: (count: number) => `${count} ${plural(count, { one: "card", other: "cards" })}`,
     },
   },
+  inbox: {
+    title: "Inbox",
+    views: {
+      label: "Lists",
+      new: "New",
+      skipped: "Skipped",
+    },
+    intro: {
+      new: "Tick the cards you want to learn now. The others stay here for another day.",
+      skipped:
+        "Skipped cards never come back on their own. Learn them after all, or put them back.",
+    },
+    decks: {
+      label: "Filter by deck",
+      all: "All decks",
+    },
+    pagination: {
+      label: "Pages",
+      previous: "Previous",
+      next: "Next",
+      page: (page: number, pageCount: number) => `Page ${page} of ${pageCount}`,
+    },
+    empty: {
+      new: "No new card: everything has been sorted.",
+      skipped: "No skipped card.",
+    },
+    list: {
+      label: "Cards",
+      selectAll: "Select all",
+      selected: "selected",
+      decisions: {
+        learn: "Learn the list",
+        skip: "Skip",
+        restore: "Back to inbox",
+      },
+      // Shown after a decision, after the number of cards (forms picked on the client)
+      done: {
+        learn: {
+          one: "card added to your learning list",
+          other: "cards added to your learning list",
+        },
+        skip: { one: "card skipped", other: "cards skipped" },
+        restore: { one: "card back in the inbox", other: "cards back in the inbox" },
+      },
+      error: "Something went wrong. Please try again.",
+    },
+  },
 };
 
 export type Dictionary = typeof en;
