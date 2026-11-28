@@ -24,3 +24,21 @@ export const skippedCards = (userId: string, code: LanguageCode) =>
     ...visibleCards(userId, code),
     userCards: { some: { userId, status: "SKIPPED" } },
   }) satisfies Prisma.CardWhereInput;
+
+/** Cards the user chose to learn whose discovery is still to do (shown in full once). */
+export const cardsToDiscover = (userId: string, code: LanguageCode) =>
+  ({
+    userId,
+    status: "LEARNING",
+    discoveredAt: null,
+    card: visibleCards(userId, code),
+  }) satisfies Prisma.UserCardWhereInput;
+
+/** Discovered cards: each has one `ReviewState` and comes back when it is due. */
+export const cardsInReview = (userId: string, code: LanguageCode) =>
+  ({
+    userId,
+    status: "LEARNING",
+    discoveredAt: { not: null },
+    card: visibleCards(userId, code),
+  }) satisfies Prisma.UserCardWhereInput;

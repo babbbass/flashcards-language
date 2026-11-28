@@ -2,8 +2,8 @@ import "server-only";
 import { connection } from "next/server";
 import { cache } from "react";
 import { requireUser } from "@/lib/auth/current-user";
-import { inboxCards } from "@/lib/cards/visibility";
-import { toLocalDay, weekOf } from "@/lib/dates";
+import { cardsInReview, cardsToDiscover, inboxCards } from "@/lib/cards/visibility";
+import { addDays, toLocalDay, weekOf } from "@/lib/dates";
 import type { LanguageCode } from "@/lib/languages";
 import { prisma } from "@/lib/prisma";
 import { computeStreak } from "@/lib/stats/streak";
@@ -20,41 +20,34 @@ export const getLanguageStats = cache(async (code: LanguageCode) => {
   // "Now" belongs to the request, not to a prerender (Cache Components)
   await connection();
   const now = new Date();
-  const inLanguage = { deck: { languageCode: code } };
+  const today = toLocalDay(now, user.timezone);
 
-  const [inbox, due, reviews] = await Promise.all([
+  const [inbox, discover, due, activeDays] = await Promise.all([
     // Inbox: cards visible to the user (catalog or their own) they have not decided on yet
     prisma.card.count({ where: inboxCards(user.id, code) }),
-    // Due: discovered cards whose next review date has come (one review per card)
+    // Picked in the Inbox, not shown in full yet
+    prisma.userCard.count({ where: cardsToDiscover(user.id, code) }),
+    // Discovered cards whose next review date has come (one review per card)
     prisma.reviewState.count({
-      where: {
-        due: { lte: now },
-        userCard: {
-          userId: user.id,
-          status: "LEARNING",
-          discoveredAt: { not: null },
-          card: inLanguage,
-        },
-      },
+      where: { due: { lte: now }, userCard: cardsInReview(user.id, code) },
     }),
-    prisma.reviewLog.findMany({
+    // One row per day with answers (written with each answer): a few hundred rows at most
+    prisma.dailyActivity.findMany({
       where: {
         userId: user.id,
         languageCode: code,
-        reviewedAt: { gte: new Date(now.getTime() - STREAK_LOOKBACK_DAYS * 24 * 60 * 60 * 1000) },
+        day: { gte: addDays(today, -STREAK_LOOKBACK_DAYS) },
       },
-      select: { reviewedAt: true },
+      select: { day: true },
     }),
   ]);
 
-  const today = toLocalDay(now, user.timezone);
-  const reviewedDays = new Set(
-    reviews.map(({ reviewedAt }) => toLocalDay(reviewedAt, user.timezone)),
-  );
+  const reviewedDays = new Set(activeDays.map(({ day }) => day));
 
   return {
     inbox,
-    due,
+    /** Waiting in the Review tab: discoveries plus due reviews. */
+    toReview: discover + due,
     streak: computeStreak(reviewedDays, today),
     week: weekOf(today).map((day) => ({
       day,

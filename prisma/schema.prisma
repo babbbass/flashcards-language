@@ -132,6 +132,7 @@ model User {
   cards     Card[]
   userCards UserCard[]
   reviews   ReviewLog[]
+  activity  DailyActivity[]
 }
 
 /// A user's decision about a card, made in the Inbox.
@@ -194,4 +195,20 @@ model ReviewLog {
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, languageCode, reviewedAt])
+}
+
+/// Answers per user, language and calendar day, written in the same transaction as each
+/// ReviewLog. The streak and the week strip read these few rows instead of every answer.
+/// `day` is the user's local day at answer time ("YYYY-MM-DD", see lib/dates): changing
+/// timezone later does not move past days.
+model DailyActivity {
+  id           String @id @default(cuid())
+  userId       String
+  languageCode String
+  day          String
+  reviews      Int    @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, languageCode, day])
 }

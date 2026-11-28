@@ -8,7 +8,7 @@ import type { LanguageStats } from "@/lib/stats/language-stats";
 type Props = {
   code: LanguageCode;
   inbox: LanguageStats["inbox"];
-  due: LanguageStats["due"];
+  toReview: LanguageStats["toReview"];
 };
 
 type NextAction = {
@@ -21,10 +21,10 @@ type NextAction = {
 /** The single most useful thing to do now: review first, then learn new cards. */
 const nextAction = (
   t: Dictionary["home"]["hero"],
-  { inbox, due }: Pick<Props, "inbox" | "due">,
+  { inbox, toReview }: Pick<Props, "inbox" | "toReview">,
 ): NextAction => {
-  if (due > 0) {
-    return { ...t.review, title: t.review.title(due), tab: "review" };
+  if (toReview > 0) {
+    return { ...t.review, title: t.review.title(toReview), tab: "review" };
   }
   if (inbox > 0) {
     return { ...t.inbox, title: t.inbox.title(inbox), tab: "inbox" };
@@ -33,9 +33,9 @@ const nextAction = (
 };
 
 /** Big call-to-action card at the top of the language home. */
-export const HeroCard = ({ code, inbox, due }: Props) => {
+export const HeroCard = ({ code, inbox, toReview }: Props) => {
   const t = getDictionary(code).home.hero;
-  const action = nextAction(t, { inbox, due });
+  const action = nextAction(t, { inbox, toReview });
 
   if (!action) {
     return (
