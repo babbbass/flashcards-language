@@ -18,7 +18,7 @@ type Props = {
  * so the dictionaries never ship to the browser.
  */
 export const LanguageShell = async ({ language, children }: Props) => {
-  const { inbox, due } = await getLanguageStats(language.code);
+  const { inbox, toReview } = await getLanguageStats(language.code);
   const t = getDictionary(language.code);
   const badge = (count: number) => ({ count, label: t.nav.items(count) });
 
@@ -27,7 +27,7 @@ export const LanguageShell = async ({ language, children }: Props) => {
       <RememberLanguage code={language.code} />
       <TabBar
         language={language}
-        badges={{ inbox: badge(inbox), review: badge(due) }}
+        badges={{ inbox: badge(inbox), review: badge(toReview) }}
         strings={{
           nav: t.nav.label,
           comingSoon: t.nav.comingSoon,

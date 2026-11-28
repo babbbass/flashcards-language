@@ -101,4 +101,29 @@ export const es: Dictionary = {
       error: "Algo ha fallado. Inténtalo de nuevo.",
     },
   },
+  review: {
+    title: "Repasar",
+    empty: {
+      title: "Nada que repasar",
+      text: "Ninguna tarjeta pendiente ahora. Elige tarjetas nuevas en la bandeja o vuelve más tarde.",
+      inbox: "Ir a la bandeja",
+    },
+    session: {
+      progress: "Progreso",
+      discover: { eyebrow: "Tarjeta nueva", cta: "Entendido" },
+      reveal: "Mostrar respuesta",
+      rate: "¿La recordabas bien?",
+      grades: { AGAIN: "Otra vez", HARD: "Difícil", GOOD: "Bien", EASY: "Fácil" },
+      example: "Ejemplo",
+      note: "Nota",
+      spaceKey: "Espacio",
+      saveError: "No se ha podido guardar una respuesta. Recarga la página para continuar.",
+      done: {
+        title: "¡Sesión terminada!",
+        studied: { one: "tarjeta estudiada", other: "tarjetas estudiadas" },
+        more: "Seguir",
+        home: "Volver al inicio",
+      },
+    },
+  },
 };

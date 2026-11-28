@@ -15,7 +15,7 @@ export const HomeContent = async ({ language }: Props) => {
   return (
     <>
       <StreakWeek language={language} streak={stats.streak} week={stats.week} />
-      <HeroCard code={language.code} inbox={stats.inbox} due={stats.due} />
+      <HeroCard code={language.code} inbox={stats.inbox} toReview={stats.toReview} />
       <DeckList code={language.code} />
     </>
   );

@@ -104,6 +104,32 @@ export const en = {
       error: "Something went wrong. Please try again.",
     },
   },
+  review: {
+    title: "Review",
+    empty: {
+      title: "Nothing to review",
+      text: "No card is due right now. Pick new cards in the Inbox, or come back later.",
+      inbox: "Go to the Inbox",
+    },
+    // Plain data (no functions): sent to the review session in the browser
+    session: {
+      progress: "Progress",
+      discover: { eyebrow: "New card", cta: "Got it" },
+      reveal: "Show answer",
+      rate: "How well did you remember it?",
+      grades: { AGAIN: "Again", HARD: "Hard", GOOD: "Good", EASY: "Easy" },
+      example: "Example",
+      note: "Note",
+      spaceKey: "Space",
+      saveError: "An answer could not be saved. Reload the page to continue.",
+      done: {
+        title: "Session complete",
+        studied: { one: "card studied", other: "cards studied" },
+        more: "Keep going",
+        home: "Back home",
+      },
+    },
+  },
 };
 
 export type Dictionary = typeof en;

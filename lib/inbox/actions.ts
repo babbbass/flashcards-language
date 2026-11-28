@@ -6,11 +6,11 @@ import type { Prisma } from "@/generated/prisma/client";
 import { requireUser } from "@/lib/auth/current-user";
 import { inboxCards, visibleCards } from "@/lib/cards/visibility";
 import { INBOX_MOVES, INBOX_PAGE_SIZE } from "@/lib/inbox/views";
-import { isLanguageCode, type LanguageCode } from "@/lib/languages";
+import { languageCodeSchema } from "@/lib/language-schema";
 import { prisma } from "@/lib/prisma";
 
 const inputSchema = z.object({
-  code: z.custom<LanguageCode>((value) => typeof value === "string" && isLanguageCode(value)),
+  code: languageCodeSchema,
   cardIds: z.array(z.string().min(1)).min(1).max(INBOX_PAGE_SIZE),
   move: z.discriminatedUnion("view", [
     z.object({ view: z.literal("new"), decision: z.enum(INBOX_MOVES.new) }),
